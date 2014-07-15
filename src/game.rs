@@ -9,24 +9,12 @@ pub struct Loop {
     state : State,
 }
 
-struct FloatPoint(f64,f64);
-
 impl Loop {
     pub fn new(renderer : Renderer) -> Loop {
-        midpoint = {
-            let (x,y) = renderer.get_output_size().unwrap();
-            (x*32,y*32)
-        };
+        let output_size = renderer.get_output_size().unwrap();
         Loop {
             renderer : renderer,
-            state : State {
-                keys : Default::default(),
-                player1 : PlayerShip {
-                    pos : midpoint,
-                    vec : FloatPoint(0.0,0.0),
-                    dir : FloatPoint(0.0,1.0),
-                }
-            }
+            state : State::new(output_size)
         }
     }
 
@@ -43,17 +31,19 @@ impl Loop {
             _ => &mut dummy // Ignore any other keys
         } = keyDown;
         if *keys != oldkeys {
-            println!("{}",self.state.keys);
+            println!("{}",*keys);
         }
     }
 
     pub fn update(&mut self) {
-        let keys = self.keys;
-        let player = &mut self.player1;
-        if keys.up { player.accelerate() }
-        if keys.down { player.decelerate() }
-        if keys.left { player.turn_left() }
-        if keys.right { player.turn_right() }
+        {
+            let keys = self.state.keys;
+            let player = &mut self.state.player1;
+            if keys.up { player.accelerate() }
+            if keys.down { player.decelerate() }
+            if keys.left { player.turn_left() }
+            if keys.right { player.turn_right() }
+        }
         self.draw();
     }
 
@@ -62,7 +52,7 @@ impl Loop {
         renderer.set_draw_color(pixels::RGB(0,0,0)).unwrap();
         renderer.clear().unwrap();
         renderer.set_draw_color(pixels::RGB(255,255,255)).unwrap();
-        renderer.draw_point(self.player1.real_pos()).unwrap();
+        renderer.draw_point(self.state.player1.real_pos()).unwrap();
         renderer.present();
     }
 }
@@ -70,6 +60,17 @@ impl Loop {
 struct State {
     keys : KeyState,
     player1 : PlayerShip
+}
+
+impl State {
+    fn new(dims : (int,int)) -> State {
+        let midpoint = {
+        };
+        State {
+            keys : Default::default(),
+            player1 : PlayerShip::new(dims)
+        }
+    }
 }
 
 #[deriving(Default,PartialEq,Eq,Show)]
@@ -86,14 +87,31 @@ struct PlayerShip {
     pos : Point,
     vel : Point,
     angle : f32, // Zero points upwards.
-    dimensions : (uint,uint),
+    dimensions : (int,int),
 }
 
 impl PlayerShip {
+    fn new(dims : (int,int)) -> PlayerShip {
+        PlayerShip {
+            pos : Point::new(0,0),
+            vel : Point::new(0,0),
+            angle : 0.0,
+            dimensions : dims
+        }
+    }
+
     fn real_pos(&self) -> Point {
-        Point(0,0) // TODO
+        self.pos
     }
 
     fn update(&mut self) {
+    }
+    fn accelerate(&mut self) {
+    }
+    fn decelerate(&mut self) {
+    }
+    fn turn_left(&mut self) {
+    }
+    fn turn_right(&mut self) {
     }
 }
