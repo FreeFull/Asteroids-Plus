@@ -19,6 +19,8 @@ impl Loop {
     }
 
     pub fn handlekey(&mut self, keyDown : bool, key : keycode::KeyCode) {
+        // I'm feeling a bit iffy about this. Ideally, no dummy variable
+        // should be needed.
         let mut dummy = false; 
         let keys = &mut self.state.keys;
         let oldkeys = *keys;
@@ -51,8 +53,7 @@ impl Loop {
         let renderer = &self.renderer;
         renderer.set_draw_color(pixels::RGB(0,0,0)).unwrap();
         renderer.clear().unwrap();
-        renderer.set_draw_color(pixels::RGB(255,255,255)).unwrap();
-        renderer.draw_point(self.state.player1.real_pos()).unwrap();
+        self.state.player1.draw(renderer);
         renderer.present();
     }
 }
@@ -91,21 +92,15 @@ struct PlayerShip {
 }
 
 impl PlayerShip {
-    fn new(dims : (int,int)) -> PlayerShip {
+    fn new((xmax,ymax) : (int,int)) -> PlayerShip {
         PlayerShip {
             pos : Point::new(0,0),
             vel : Point::new(0,0),
             angle : 0.0,
-            dimensions : dims
+            dimensions : (xmax*64,ymax*64)
         }
     }
 
-    fn real_pos(&self) -> Point {
-        self.pos
-    }
-
-    fn update(&mut self) {
-    }
     fn accelerate(&mut self) {
     }
     fn decelerate(&mut self) {
@@ -113,5 +108,12 @@ impl PlayerShip {
     fn turn_left(&mut self) {
     }
     fn turn_right(&mut self) {
+    }
+
+    fn update(&mut self) {
+    }
+
+    fn draw(&self, renderer : &Renderer) {
+        renderer.set_draw_color(pixels::RGB(255,255,255)).unwrap();
     }
 }
