@@ -1,5 +1,5 @@
 extern crate sdl = "sdl2";
-use sdl::{video,event,keycode,timer,render};
+use sdl::{video, event, keycode, timer, render};
 
 use game::Loop;
 mod game;
@@ -25,10 +25,10 @@ fn main() {
                 event::QuitEvent(_) => break 'main,
                 event::KeyDownEvent(_, _, key, _, _) => match key {
                     keycode::EscapeKey => break 'main,
-                    _ => game_loop.handlekey(true,key)
+                    _ => game_loop.handlekey(true, key)
                 },
                 event::KeyUpEvent(_, _, key, _, _) => match key {
-                    _ => game_loop.handlekey(false,key)
+                    _ => game_loop.handlekey(false, key)
                 },
                 event::NoEvent => break 'event,
                 _ => ()
