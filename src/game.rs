@@ -68,11 +68,9 @@ struct State {
 
 impl State {
     fn new(dims: (int, int)) -> State {
-        let midpoint = {
-        };
         State {
             keys: Default::default(),
-            player1: PlayerShip::new(dims)
+            player1: PlayerShip::new(dims),
         }
     }
 }
@@ -92,10 +90,15 @@ struct PlayerShip {
     vel: Point,
     angle: f32, // Zero points upwards.
     shape: Vec<(f32,f32)>,
+    midpoint: Point,
 }
 
 impl PlayerShip {
     fn new((xmax, ymax): (int, int)) -> PlayerShip {
+        let midpoint = {
+            Point::new((xmax/2) as i32,(ymax/2) as i32)
+        };
+
         let mut shape = Vec::new();
         shape.push_all([(0.0,-10.0),(-5.0,10.0),(0.0,3.0),(5.0,10.0),(0.0,-10.0)]);
 
@@ -104,6 +107,7 @@ impl PlayerShip {
             vel: Point::new(0, 0),
             angle: 0.0,
             shape: shape,
+            midpoint: midpoint
         }
     }
 
@@ -122,13 +126,10 @@ impl PlayerShip {
     }
 
     fn draw(&self, renderer: &Renderer) {
-        let midpoint = { let (x,y) = renderer.get_output_size().unwrap();
-            Point::new((x/2) as i32,(y/2) as i32)
-        };
         let rotated_shape = self.shape
             .iter()
             .map(|&point| rotate(point, self.angle))
-            .map(|(x,y)| translate(Point::new(x as i32, y as i32),midpoint))
+            .map(|(x,y)| translate(Point::new(x as i32, y as i32),self.midpoint))
             .collect::<Vec<Point>>();
         renderer.set_draw_color(pixels::RGB(255, 255, 255)).unwrap();
         renderer.draw_lines(rotated_shape.as_slice());
