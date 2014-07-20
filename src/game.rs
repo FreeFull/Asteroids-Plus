@@ -4,7 +4,7 @@ use std::default::Default;
 
 type Renderer = render::Renderer<video::Window>;
 
-static TURN_SPEED: f32 = 0.1;
+static TURN_SPEED: f32 = 0.001;
 static ACCELERATION: f32 = 0.1;
 
 pub struct Loop {
@@ -91,16 +91,19 @@ struct PlayerShip {
     pos: Point,
     vel: Point,
     angle: f32, // Zero points upwards.
-    dimensions: (int, int),
+    shape: Vec<(f32,f32)>,
 }
 
 impl PlayerShip {
     fn new((xmax, ymax): (int, int)) -> PlayerShip {
+        let mut shape = Vec::new();
+        shape.push_all([(0.0,-10.0),(-5.0,10.0),(0.0,3.0),(5.0,10.0),(0.0,-10.0)]);
+
         PlayerShip {
             pos: Point::new(0, 0),
             vel: Point::new(0, 0),
             angle: 0.0,
-            dimensions: (xmax*64, ymax*64)
+            shape: shape,
         }
     }
 
@@ -109,14 +112,33 @@ impl PlayerShip {
     fn decelerate(&mut self) {
     }
     fn turn_left(&mut self) {
+        self.angle = self.angle - TURN_SPEED;
     }
     fn turn_right(&mut self) {
+        self.angle = self.angle + TURN_SPEED;
     }
 
     fn update(&mut self) {
     }
 
     fn draw(&self, renderer: &Renderer) {
+        let midpoint = { let (x,y) = renderer.get_output_size().unwrap();
+            Point::new((x/2) as i32,(y/2) as i32)
+        };
+        let rotated_shape = self.shape
+            .iter()
+            .map(|&point| rotate(point, self.angle))
+            .map(|(x,y)| translate(Point::new(x as i32, y as i32),midpoint))
+            .collect::<Vec<Point>>();
         renderer.set_draw_color(pixels::RGB(255, 255, 255)).unwrap();
+        renderer.draw_lines(rotated_shape.as_slice());
     }
+}
+
+fn rotate((x,y): (f32,f32), angle: f32) -> (f32,f32) {
+    (x * angle.cos() + y * angle.sin(), x * angle.sin() - y * angle.cos())
+}
+
+fn translate(point: Point, by: Point) -> Point {
+    Point::new(point.x + by.x, point.y + by.y)
 }
