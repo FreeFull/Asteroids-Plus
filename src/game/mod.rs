@@ -1,6 +1,9 @@
-use sdl::{event, render, pixels, video, keycode};
+use sdl::{render, pixels, video, keycode};
 use sdl::rect::Point;
 use std::default::Default;
+
+use self::entity::{Entity,Asteroid,Delete};
+mod entity;
 
 type Renderer = render::Renderer<video::Window>;
 
@@ -57,13 +60,20 @@ impl Loop {
         renderer.set_draw_color(pixels::RGB(0, 0, 0)).unwrap();
         renderer.clear().unwrap();
         self.state.player1.draw(renderer);
+        let screen_centre = self.state.player1.position();
+        for entity in self.state.entities.iter() {
+            entity.draw(renderer, screen_centre);
+        }
         renderer.present();
     }
 }
 
 struct State {
     keys: KeyState,
-    player1: PlayerShip
+    player1: PlayerShip,
+    entities: Vec<Box<Entity>>,
+    delete_list: Vec<Delete>,
+    add_list: Vec<Box<Entity>>
 }
 
 impl State {
@@ -71,6 +81,9 @@ impl State {
         State {
             keys: Default::default(),
             player1: PlayerShip::new(dims),
+            entities: vec![],
+            delete_list: vec![],
+            add_list: vec![],
         }
     }
 }
@@ -133,6 +146,10 @@ impl PlayerShip {
             .collect::<Vec<Point>>();
         renderer.set_draw_color(pixels::RGB(255, 255, 255)).unwrap();
         renderer.draw_lines(rotated_shape.as_slice());
+    }
+
+    fn position(&self) -> Point {
+        self.pos
     }
 }
 
