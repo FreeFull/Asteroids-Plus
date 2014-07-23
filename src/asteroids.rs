@@ -11,7 +11,7 @@ fn main() {
 
     let window = video::Window::new("Asteroids Plus",
                                     video::PosCentered, video::PosCentered,
-                                    500, 500,
+                                    512, 512,
                                     video::WindowFlags::empty()).unwrap();
     let renderer = render::Renderer::from_window(window,
                                                  render::DriverAuto,

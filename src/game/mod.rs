@@ -2,7 +2,7 @@ use sdl::{render, pixels, video, keycode};
 use sdl::rect::Point;
 use std::default::Default;
 
-use self::entity::{Entity,Asteroid,Delete};
+use self::entity::{Entity,Asteroid};
 mod entity;
 
 type Renderer = render::Renderer<video::Window>;
@@ -52,6 +52,14 @@ impl Loop {
             if keys.left { player.turn_left() }
             if keys.right { player.turn_right() }
         }
+        for entity in self.state.entities.iter() {
+            match entity.update(self.state.entities.as_slice(), &mut self.state.delete_list, &mut self.state.add_list) {
+                Some(e) => self.state.updated_entities.push(e),
+                None => {}
+            }
+        }
+        ::std::mem::swap(&mut self.state.entities, &mut self.state.updated_entities);
+        self.state.updated_entities.truncate(0);
         self.draw();
     }
 
@@ -72,7 +80,8 @@ struct State {
     keys: KeyState,
     player1: PlayerShip,
     entities: Vec<Box<Entity>>,
-    delete_list: Vec<Delete>,
+    updated_entities: Vec<Box<Entity>>,
+    delete_list: Vec<uint>,
     add_list: Vec<Box<Entity>>
 }
 
@@ -81,7 +90,8 @@ impl State {
         State {
             keys: Default::default(),
             player1: PlayerShip::new(dims),
-            entities: vec![],
+            entities: vec![Asteroid::new_entity((10.0, 10.0), 4.0)],
+            updated_entities: vec![],
             delete_list: vec![],
             add_list: vec![],
         }
