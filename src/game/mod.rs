@@ -27,7 +27,7 @@ impl Loop {
     pub fn handlekey(&mut self, keyDown: bool, key: keycode::KeyCode) {
         // I'm feeling a bit iffy about this. Ideally, no dummy variable
         // should be needed.
-        let mut dummy = false; 
+        let mut dummy = false;
         let keys = &mut self.state.keys;
         let oldkeys = *keys;
         *match key {
@@ -52,6 +52,7 @@ impl Loop {
             if keys.left { player.turn_left() }
             if keys.right { player.turn_right() }
         }
+        self.state.player1.update();
         for entity in self.state.entities.iter() {
             match entity.update(self.state.entities.as_slice(), &mut self.state.delete_list, &mut self.state.add_list) {
                 Some(e) => self.state.updated_entities.push(e),
@@ -79,10 +80,10 @@ impl Loop {
 struct State {
     keys: KeyState,
     player1: PlayerShip,
-    entities: Vec<Box<Entity>>,
-    updated_entities: Vec<Box<Entity>>,
+    entities: Vec<Entity>,
+    updated_entities: Vec<Entity>,
     delete_list: Vec<uint>,
-    add_list: Vec<Box<Entity>>
+    add_list: Vec<Entity>
 }
 
 impl State {
@@ -90,7 +91,7 @@ impl State {
         State {
             keys: Default::default(),
             player1: PlayerShip::new(dims),
-            entities: vec![Asteroid::new_entity((10.0, 10.0), 4.0)],
+            entities: vec![Asteroid.new_entity((10.0, 10.0), 4.0)],
             updated_entities: vec![],
             delete_list: vec![],
             add_list: vec![],

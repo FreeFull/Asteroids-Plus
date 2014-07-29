@@ -9,5 +9,5 @@ authors = [ "jazz2rulez@gmail.com" ]
 name = "asteroids"
 
 [dependencies.sdl2]
-# git = "https://github.com/AngryLawyer/rust-sdl2.git"
-git = "https://github.com/PistonDevelopers/rust-sdl2.git"
+git = "https://github.com/AngryLawyer/rust-sdl2.git"
+# git = "https://github.com/PistonDevelopers/rust-sdl2.git"
