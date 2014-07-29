@@ -140,10 +140,10 @@ impl PlayerShip {
     fn decelerate(&mut self) {
     }
     fn turn_left(&mut self) {
-        self.angle = self.angle - TURN_SPEED;
+        self.angle = self.angle + TURN_SPEED;
     }
     fn turn_right(&mut self) {
-        self.angle = self.angle + TURN_SPEED;
+        self.angle = self.angle - TURN_SPEED;
     }
 
     fn update(&mut self) {
@@ -165,7 +165,7 @@ impl PlayerShip {
 }
 
 fn rotate((x,y): (f32,f32), angle: f32) -> (f32,f32) {
-    (x * angle.cos() + y * angle.sin(), x * angle.sin() - y * angle.cos())
+    (x * angle.cos() + y * angle.sin(), - x * angle.sin() + y * angle.cos())
 }
 
 fn translate(point: Point, by: Point) -> Point {
