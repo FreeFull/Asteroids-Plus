@@ -3,7 +3,10 @@ use sdl::rect::Point;
 use std::default::Default;
 
 use self::entity::{Entity,Asteroid};
+use self::location::Location;
+
 mod entity;
+pub mod location;
 
 type Renderer = render::Renderer<video::Window>;
 
@@ -71,7 +74,7 @@ impl Loop {
         self.state.player1.draw(renderer);
         let screen_centre = self.state.player1.position();
         for entity in self.state.entities.iter() {
-            entity.draw(renderer, screen_centre);
+            entity.draw(renderer, self.state.output_size, screen_centre);
         }
         renderer.present();
     }
@@ -83,18 +86,20 @@ struct State {
     entities: Vec<Entity>,
     updated_entities: Vec<Entity>,
     delete_list: Vec<uint>,
-    add_list: Vec<Entity>
+    add_list: Vec<Entity>,
+    output_size: (int, int),
 }
 
 impl State {
-    fn new(dims: (int, int)) -> State {
+    fn new(output_size: (int, int)) -> State {
         State {
             keys: Default::default(),
-            player1: PlayerShip::new(dims),
-            entities: vec![Asteroid.new_entity((10.0, 10.0), 4.0)],
+            player1: PlayerShip::new(output_size),
+            entities: vec![Asteroid.new_entity(Location::new(0.1, 0.1).unwrap(), 4.0)],
             updated_entities: vec![],
             delete_list: vec![],
             add_list: vec![],
+            output_size: output_size,
         }
     }
 }

@@ -1,5 +1,6 @@
 use sdl::{render, video};
 use sdl::rect::Point;
+use super::location::Location;
 pub use self::asteroid::Asteroid;
 
 type Renderer = render::Renderer<video::Window>;
@@ -10,20 +11,20 @@ enum EntityType {
 }
 
 struct EntityData {
-    position: (f32, f32),
+    position: Location,
     size: f32,
 }
 
 pub struct Entity {
     update: fn(self_: &Entity, entities: &[Entity], to_delete: &mut Vec<uint>, to_add: &mut Vec<Entity>) -> Option<Entity>,
     draw_real: fn(self_: &Entity, renderer: &Renderer, position: Point),
-    position: fn(self_: &Entity) -> (f32,f32),
+    position: fn(self_: &Entity) -> Location,
     kind: fn(self_: &Entity) -> EntityType,
     data: EntityData,
 }
 
 impl Entity {
-    pub fn new_entity(&self, position: (f32, f32), size: f32) -> Entity {
+    pub fn new_entity(&self, position: Location, size: f32) -> Entity {
         Entity {
             data: EntityData { position: position, size: size },
             ..*self
@@ -34,10 +35,9 @@ impl Entity {
         (self.update)(self, entities, to_delete, to_add)
     }
 
-    pub fn draw(&self, renderer: &Renderer, screen_view: Point) {
+    pub fn draw(&self, renderer: &Renderer, (max_x, max_y): (int, int), screen_view: Point) {
         // TODO: Implement draw.
-        let (x,y) = self.data.position;
-        let position = Point::new(x as i32, y as i32);
+        let position = self.data.position.as_point(max_x as i32, max_y as i32);
         self.draw_real(renderer, position)
     }
 
@@ -45,7 +45,7 @@ impl Entity {
         (self.draw_real)(self, renderer, position)
     }
 
-    pub fn position(&self) -> (f32,f32) {
+    pub fn position(&self) -> Location {
         (self.position)(self)
     }
 
@@ -56,6 +56,7 @@ impl Entity {
 
 mod asteroid {
     use super::{Entity, EntityData, EntityType, AsteroidType, Renderer};
+    use game::location::Location;
     use sdl::rect::{Point, Rect};
     use sdl::pixels;
 
@@ -70,7 +71,7 @@ mod asteroid {
         renderer.fill_rect(&rect);
     }
 
-    fn position(self_: &Entity) -> (f32, f32) {
+    fn position(self_: &Entity) -> Location {
         self_.data.position
     }
 
@@ -84,7 +85,7 @@ mod asteroid {
         position: position,
         kind: kind,
         data: EntityData {
-            position: (0.0, 0.0),
+            position: Location { x: 0, y: 0 },
             size: 5.0,
         }
     };
