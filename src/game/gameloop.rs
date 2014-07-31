@@ -28,7 +28,6 @@ impl Loop {
         // should be needed.
         let mut dummy = false;
         let keys = &mut self.state.keys;
-        let oldkeys = *keys;
         *match key {
             keycode::UpKey => &mut keys.up,
             keycode::DownKey => &mut keys.down,
@@ -37,9 +36,6 @@ impl Loop {
             keycode::SpaceKey => &mut keys.space,
             _ => &mut dummy // Ignore any other keys
         } = keyDown;
-        if *keys != oldkeys {
-            println!("{}", *keys);
-        }
     }
 
     pub fn update(&mut self) {
