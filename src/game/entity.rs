@@ -1,9 +1,8 @@
-use sdl::{render, video};
 use sdl::rect::Point;
-use super::location::Location;
-pub use self::asteroid::Asteroid;
+use game::location::Location;
+use game::Renderer;
 
-type Renderer = render::Renderer<video::Window>;
+pub use self::asteroid::Asteroid;
 
 enum EntityType {
     AsteroidType,
@@ -55,8 +54,9 @@ impl Entity {
 }
 
 mod asteroid {
-    use super::{Entity, EntityData, EntityType, AsteroidType, Renderer};
+    use super::{Entity, EntityData, EntityType, AsteroidType};
     use game::location::Location;
+    use game::Renderer;
     use sdl::rect::{Point, Rect};
     use sdl::pixels;
 
