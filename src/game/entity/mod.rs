@@ -1,5 +1,5 @@
 use sdl::rect::Point;
-use game::location::Location;
+use game::location::{Location, Displacement};
 use game::Renderer;
 
 pub use self::asteroid::Asteroid;
@@ -12,6 +12,7 @@ enum EntityType {
 
 struct EntityData {
     position: Location,
+    velocity: Displacement,
     size: f32,
 }
 
@@ -24,9 +25,9 @@ pub struct Entity {
 }
 
 impl Entity {
-    pub fn new_entity(&self, position: Location, size: f32) -> Entity {
+    pub fn new_entity(&self, position: Location, velocity: Displacement, size: f32) -> Entity {
         Entity {
-            data: EntityData { position: position, size: size },
+            data: EntityData { position: position, size: size, velocity: velocity },
             ..*self
         }
     }
@@ -35,9 +36,9 @@ impl Entity {
         (self.update)(self, entities, to_delete, to_add)
     }
 
-    pub fn draw(&self, renderer: &Renderer, (max_x, max_y): (int, int), screen_view: Point) {
+    pub fn draw(&self, renderer: &Renderer, (max_x, max_y): (i32, i32), screen_view: Point) {
         // TODO: Implement draw.
-        let position = self.data.position.as_point(max_x as i32, max_y as i32);
+        let position = self.data.position.as_point(max_x, max_y);
         self.draw_real(renderer, position)
     }
 

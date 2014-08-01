@@ -1,5 +1,5 @@
 use super::{Entity, EntityData, EntityType, AsteroidType};
-use game::location::Location;
+use game::location::{Location, Displacement};
 use game::Renderer;
 use sdl::rect::{Point, Rect};
 use sdl::pixels;
@@ -30,6 +30,7 @@ pub static Asteroid: Entity = Entity {
     kind: kind,
     data: EntityData {
         position: Location { x: 0, y: 0 },
+        velocity: Displacement { x: 0, y: 0},
         size: 5.0,
     }
 };

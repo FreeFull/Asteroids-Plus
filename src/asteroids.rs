@@ -1,3 +1,5 @@
+#![feature(macro_rules)]
+
 extern crate libc;
 extern crate sdl = "sdl2";
 use sdl::{video, event, keycode, timer, render};

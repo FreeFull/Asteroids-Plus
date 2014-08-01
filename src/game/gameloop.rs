@@ -2,11 +2,11 @@ use sdl::{pixels, keycode};
 use sdl::rect::Point;
 use std::default::Default;
 
-use game::entity::{Entity,Asteroid};
-use game::location::Location;
+use game::entity::{Entity, Asteroid};
+use game::location::{Location, Displacement, Acceleration};
 use game::Renderer;
 
-static TURN_SPEED: f32 = 0.001;
+static TURN_SPEED: f32 = 0.01;
 static ACCELERATION: f32 = 0.1;
 
 pub struct Loop {
@@ -16,7 +16,8 @@ pub struct Loop {
 
 impl Loop {
     pub fn new(renderer: Renderer) -> Loop {
-        let output_size = renderer.get_output_size().unwrap();
+        let (xmax, ymax) = renderer.get_output_size().unwrap();
+        let output_size = (xmax as i32, ymax as i32);
         Loop {
             renderer: renderer,
             state: State::new(output_size)
@@ -79,15 +80,15 @@ struct State {
     updated_entities: Vec<Entity>,
     delete_list: Vec<uint>,
     add_list: Vec<Entity>,
-    output_size: (int, int),
+    output_size: (i32, i32),
 }
 
 impl State {
-    fn new(output_size: (int, int)) -> State {
+    fn new(output_size: (i32, i32)) -> State {
         State {
             keys: Default::default(),
             player1: PlayerShip::new(output_size),
-            entities: vec![Asteroid.new_entity(Location::new(0.1, 0.1).unwrap(), 4.0)],
+            entities: vec![Asteroid.new_entity(Location::new(0.1, 0.1).unwrap(), Displacement::midpoint(), 4.0)],
             updated_entities: vec![],
             delete_list: vec![],
             add_list: vec![],
@@ -105,36 +106,37 @@ struct KeyState {
     space: bool,
 }
 
-// For smoother movement, everything is stored to 64th of a pixel accuracy
 struct PlayerShip {
-    pos: Point,
-    vel: Point,
+    pos: Location,
+    vel: Displacement,
     angle: f32, // Zero points upwards.
     shape: Vec<(f32,f32)>,
-    midpoint: Point,
+    output_size: (i32, i32),
 }
 
 impl PlayerShip {
-    fn new((xmax, ymax): (int, int)) -> PlayerShip {
-        let midpoint = {
-            Point::new((xmax/2) as i32,(ymax/2) as i32)
-        };
-
+    fn new(output_size: (i32, i32)) -> PlayerShip {
         let mut shape = Vec::new();
         shape.push_all([(0.0,-10.0),(-5.0,10.0),(0.0,3.0),(5.0,10.0),(0.0,-10.0)]);
 
         PlayerShip {
-            pos: Point::new(0, 0),
-            vel: Point::new(0, 0),
+            pos: Location::midpoint(),
+            vel: Displacement::midpoint(),
             angle: 0.0,
             shape: shape,
-            midpoint: midpoint
+            output_size: output_size,
         }
     }
 
     fn accelerate(&mut self) {
+        let (x, y) = rotate((0.0, -1.0 * ACCELERATION), self.angle);
+        let acc = Acceleration::new(x, y).unwrap();
+        self.vel = self.vel + acc;
     }
     fn decelerate(&mut self) {
+        let (x, y) = rotate((0.0, 1.0 * ACCELERATION), self.angle);
+        let acc = Acceleration::new(x, y).unwrap();
+        self.vel = self.vel + acc;
     }
     fn turn_left(&mut self) {
         self.angle = self.angle + TURN_SPEED;
@@ -150,14 +152,20 @@ impl PlayerShip {
         let rotated_shape = self.shape
             .iter()
             .map(|&point| rotate(point, self.angle))
-            .map(|(x,y)| translate(Point::new(x as i32, y as i32),self.midpoint))
+            .map(|(x,y)| translate(Point::new(x as i32, y as i32),self.midpoint()))
             .collect::<Vec<Point>>();
         renderer.set_draw_color(pixels::RGB(255, 255, 255)).unwrap();
         renderer.draw_lines(rotated_shape.as_slice());
     }
 
     fn position(&self) -> Point {
-        self.pos
+        let (xmax, ymax) = self.output_size;
+        self.pos.as_point(xmax, ymax)
+    }
+
+    fn midpoint(&self) -> Point {
+        let (xmax, ymax) = self.output_size;
+        Point::new(xmax/2, ymax/2)
     }
 }
 
