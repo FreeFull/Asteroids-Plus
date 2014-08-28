@@ -1,0 +1,12 @@
+[root]
+name = "Asteroids Plus"
+version = "0.0.1"
+dependencies = [
+ "sdl2 0.0.1 (git+https://github.com/AngryLawyer/rust-sdl2.git#fa1f7f4f573538d8be97de43a72b337ca7486b83)",
+]
+
+[[package]]
+name = "sdl2"
+version = "0.0.1"
+source = "git+https://github.com/AngryLawyer/rust-sdl2.git#fa1f7f4f573538d8be97de43a72b337ca7486b83"
+
