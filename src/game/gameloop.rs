@@ -7,7 +7,7 @@ use game::location::{Location, Displacement, Acceleration};
 use game::Renderer;
 
 static TURN_SPEED: f32 = 0.01;
-static ACCELERATION: f32 = 0.1;
+static ACCELERATION: f64 = 0.00001;
 
 pub struct Loop {
     renderer: Renderer,
@@ -88,7 +88,7 @@ impl State {
         State {
             keys: Default::default(),
             player1: PlayerShip::new(output_size),
-            entities: vec![Asteroid.new_entity(Location::new(0.1, 0.1).unwrap(), Displacement::midpoint(), 4.0)],
+            entities: vec![Asteroid.new_entity(Location::new(-0.5, -0.5).unwrap(), Displacement::midpoint(), 4.0)],
             updated_entities: vec![],
             delete_list: vec![],
             add_list: vec![],
@@ -129,12 +129,14 @@ impl PlayerShip {
     }
 
     fn accelerate(&mut self) {
-        let (x, y) = rotate((0.0, -1.0 * ACCELERATION), self.angle);
+        let (x, y) = rotate((0.0, -1.0), self.angle as f64);
+        let (x, y) = (x * ACCELERATION, y * ACCELERATION);
         let acc = Acceleration::new(x, y).unwrap();
         self.vel = self.vel + acc;
     }
     fn decelerate(&mut self) {
-        let (x, y) = rotate((0.0, 1.0 * ACCELERATION), self.angle);
+        let (x, y) = rotate((0.0, 1.0), self.angle as f64);
+        let (x, y) = (x * ACCELERATION, y * ACCELERATION);
         let acc = Acceleration::new(x, y).unwrap();
         self.vel = self.vel + acc;
     }
@@ -146,6 +148,7 @@ impl PlayerShip {
     }
 
     fn update(&mut self) {
+        self.pos = self.pos + self.vel;
     }
 
     fn draw(&self, renderer: &Renderer) {
@@ -169,7 +172,7 @@ impl PlayerShip {
     }
 }
 
-fn rotate((x,y): (f32,f32), angle: f32) -> (f32,f32) {
+fn rotate<T: FloatMath>((x,y): (T,T), angle: T) -> (T,T) {
     (x * angle.cos() + y * angle.sin(), - x * angle.sin() + y * angle.cos())
 }
 

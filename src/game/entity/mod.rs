@@ -38,7 +38,8 @@ impl Entity {
 
     pub fn draw(&self, renderer: &Renderer, (max_x, max_y): (i32, i32), screen_view: Point) {
         // TODO: Implement draw.
-        let position = self.data.position.as_point(max_x, max_y);
+        let Point { x, y } = self.data.position.as_point(max_x, max_y);
+        let position = Point::new(x + max_x/2, y + max_y/2);
         self.draw_real(renderer, position)
     }
 

@@ -1,10 +1,11 @@
 use sdl::rect::Point;
 
-type Contents = i16;
-static MAX : Contents = ::std::i16::MAX;
+type Contents = i32;
+static MAX : Contents = ::std::i32::MAX;
 
 macro_rules! create_struct {
     ($name: ident) => {
+        #[deriving(Show)]
         pub struct $name {
             pub x: Contents,
             pub y: Contents,
@@ -12,11 +13,11 @@ macro_rules! create_struct {
 
 
         impl $name {
-            pub fn new(x: f32, y: f32) -> Option<$name> {
+            pub fn new(x: f64, y: f64) -> Option<$name> {
                 if x >= -1.0 && y >= -1.0 && x <= 1.0 && y <= 1.0 {
                     return Some( $name {
-                        x: (x * MAX as f32) as Contents,
-                        y: (y * MAX as f32) as Contents,
+                        x: (x * MAX as f64) as Contents,
+                        y: (y * MAX as f64) as Contents,
                     })
                 }
                 None
@@ -29,12 +30,6 @@ macro_rules! create_struct {
                 }
             }
 
-            pub fn as_point(&self, max_x: i32, max_y: i32) -> Point {
-                Point::new(
-                    self.x as i32 * max_x / MAX as i32,
-                    self.y as i32 * max_y / MAX as i32,
-                    )
-            }
         }
     }
 }
@@ -57,3 +52,13 @@ create_struct!(Displacement)
 create_struct!(Acceleration)
 impl_add!(Location, Displacement)
 impl_add!(Displacement, Acceleration)
+
+impl Location {
+    pub fn as_point(&self, max_x: i32, max_y: i32) -> Point {
+        let location_x = self.x as i64 - ::std::i32::MIN as i64;
+        let location_y = self.y as i64 - ::std::i32::MIN as i64;
+        let x = location_x * max_x as i64 / ::std::u32::MAX as i64;
+        let y = location_y * max_y as i64 / ::std::u32::MAX as i64;
+        Point::new(x as i32, y as i32)
+    }
+}
