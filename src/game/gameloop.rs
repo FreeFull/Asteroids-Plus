@@ -65,7 +65,7 @@ impl Loop {
         renderer.set_draw_color(pixels::RGB(0, 0, 0)).unwrap();
         renderer.clear().unwrap();
         self.state.player1.draw(renderer);
-        let screen_centre = self.state.player1.position();
+        let screen_centre = self.state.player1.displacement();
         for entity in self.state.entities.iter() {
             entity.draw(renderer, self.state.output_size, screen_centre);
         }
@@ -88,7 +88,7 @@ impl State {
         State {
             keys: Default::default(),
             player1: PlayerShip::new(output_size),
-            entities: vec![Asteroid.new_entity(Location::new(-0.5, -0.5).unwrap(), Displacement::midpoint(), 4.0)],
+            entities: vec![Asteroid.new_entity(Location::new(-0.5, -0.5).unwrap(), Displacement::new(0.001,0.002).unwrap(), 4.0)],
             updated_entities: vec![],
             delete_list: vec![],
             add_list: vec![],
@@ -164,6 +164,10 @@ impl PlayerShip {
     fn position(&self) -> Point {
         let (xmax, ymax) = self.output_size;
         self.pos.as_point(xmax, ymax)
+    }
+
+    fn displacement(&self) -> Displacement {
+        Location::midpoint() - self.pos
     }
 
     fn midpoint(&self) -> Point {

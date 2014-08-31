@@ -10,6 +10,7 @@ enum EntityType {
     BulletType,
 }
 
+#[deriving(Show)]
 struct EntityData {
     position: Location,
     velocity: Displacement,
@@ -36,11 +37,21 @@ impl Entity {
         (self.update)(self, entities, to_delete, to_add)
     }
 
-    pub fn draw(&self, renderer: &Renderer, (max_x, max_y): (i32, i32), screen_view: Point) {
+    pub fn draw(&self, renderer: &Renderer, (max_x, max_y): (i32, i32), screen_view: Displacement) {
         // TODO: Implement draw.
-        let Point { x, y } = self.data.position.as_point(max_x, max_y);
+        let Point { x, y } = (self.data.position + screen_view).as_point(max_x, max_y);
+        let mut x = x % (max_x + 1);
+        if x < 0 { x += max_x; }
+        let mut y = y % (max_y + 1);
+        if y < 0 { y += max_y; }
         let position = Point::new(x + max_x/2, y + max_y/2);
-        self.draw_real(renderer, position)
+        self.draw_real(renderer, position);
+        let position = Point::new(x - max_x/2, y + max_y/2);
+        self.draw_real(renderer, position);
+        let position = Point::new(x + max_x/2, y - max_y/2);
+        self.draw_real(renderer, position);
+        let position = Point::new(x - max_x/2, y - max_y/2);
+        self.draw_real(renderer, position);
     }
 
     pub fn draw_real(&self, renderer: &Renderer, position: Point) {

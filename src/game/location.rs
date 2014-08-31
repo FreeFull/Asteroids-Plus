@@ -1,3 +1,4 @@
+#![allow(unused_code)]
 use sdl::rect::Point;
 
 type Contents = i32;
@@ -47,11 +48,26 @@ macro_rules! impl_add {
     }
 }
 
+macro_rules! impl_sub {
+    ($from: ident, $result: ident) => {
+        impl Sub<$from,$result> for $from {
+            fn sub(&self, rhs: &$from) -> $result {
+                $result {
+                    x: self.x - rhs.x,
+                    y: self.y - rhs.y,
+                }
+            }
+        }
+    }
+}
+
 create_struct!(Location)
 create_struct!(Displacement)
 create_struct!(Acceleration)
 impl_add!(Location, Displacement)
 impl_add!(Displacement, Acceleration)
+impl_sub!(Location, Displacement)
+impl_sub!(Displacement, Acceleration)
 
 impl Location {
     pub fn as_point(&self, max_x: i32, max_y: i32) -> Point {

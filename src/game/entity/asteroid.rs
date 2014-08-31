@@ -5,7 +5,9 @@ use sdl::rect::{Point, Rect};
 use sdl::pixels;
 
 fn update(self_: &Entity, entities: &[Entity], to_delete: &mut Vec<uint>, to_add: &mut Vec<Entity>) -> Option<Entity> {
-    Some(*self_)
+    let mut current = *self_;
+    current.data.position = current.data.position + current.data.velocity;
+    Some(current)
 }
 
 fn draw_real(self_: &Entity, renderer: &Renderer, position: Point) {
@@ -30,7 +32,7 @@ pub static Asteroid: Entity = Entity {
     kind: kind,
     data: EntityData {
         position: Location { x: 0, y: 0 },
-        velocity: Displacement { x: 0, y: 0},
+        velocity: Displacement { x: 0, y: 0 },
         size: 5.0,
     }
 };

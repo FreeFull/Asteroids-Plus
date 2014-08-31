@@ -57,6 +57,5 @@ fn main() {
         }
     }
 
-    println!("Test!");
     sdl::quit();
 }
