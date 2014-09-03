@@ -2,11 +2,31 @@
 name = "Asteroids Plus"
 version = "0.0.1"
 dependencies = [
- "sdl2 0.0.1 (git+https://github.com/AngryLawyer/rust-sdl2.git#fa1f7f4f573538d8be97de43a72b337ca7486b83)",
+ "ecs 0.2.2 (git+https://github.com/HeroesGrave/ecs-rs.git#2e0c72511da036b8303353a43130504bf8cec66c)",
+ "lazy_static 0.1.0 (git+https://github.com/Kimundi/lazy-static.rs.git#e62a65372f1dd9019e37eb9381d819edff80e360)",
+ "sdl2 0.0.1 (git+https://github.com/AngryLawyer/rust-sdl2.git#6c2daf5448011b4ae7cf61c9b161d3159f9aaf2c)",
 ]
+
+[[package]]
+name = "ecs"
+version = "0.2.2"
+source = "git+https://github.com/HeroesGrave/ecs-rs.git#2e0c72511da036b8303353a43130504bf8cec66c"
+dependencies = [
+ "uuid 0.0.1 (git+https://github.com/rust-lang/uuid#03033bb0b3205b02add7f9db958efb2981fc51dd)",
+]
+
+[[package]]
+name = "lazy_static"
+version = "0.1.0"
+source = "git+https://github.com/Kimundi/lazy-static.rs.git#e62a65372f1dd9019e37eb9381d819edff80e360"
 
 [[package]]
 name = "sdl2"
 version = "0.0.1"
-source = "git+https://github.com/AngryLawyer/rust-sdl2.git#fa1f7f4f573538d8be97de43a72b337ca7486b83"
+source = "git+https://github.com/AngryLawyer/rust-sdl2.git#6c2daf5448011b4ae7cf61c9b161d3159f9aaf2c"
+
+[[package]]
+name = "uuid"
+version = "0.0.1"
+source = "git+https://github.com/rust-lang/uuid#03033bb0b3205b02add7f9db958efb2981fc51dd"
 

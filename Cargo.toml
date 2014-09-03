@@ -11,3 +11,9 @@ name = "asteroids"
 [dependencies.sdl2]
 git = "https://github.com/AngryLawyer/rust-sdl2.git"
 # git = "https://github.com/PistonDevelopers/rust-sdl2.git"
+
+[dependencies.ecs]
+git = "https://github.com/HeroesGrave/ecs-rs.git"
+
+[dependencies.lazy_static]
+git = "https://github.com/Kimundi/lazy-static.rs.git"
