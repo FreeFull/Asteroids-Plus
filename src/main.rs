@@ -25,13 +25,18 @@ fn main() {
                                                  render::DriverAuto,
                                                  render::Accelerated).unwrap();
     let mut world = World::new();
+    let (tx, quit) = sync_channel::<()>(1);
     register_components(&mut world);
-  //register_systems(&mut world);
+    register_systems(&mut world, renderer, tx);
 
     world.finalise();
 
     loop {
         world.update();
+        match quit.try_recv() {
+            Ok(_) => break,
+            _ => {}
+        }
     }
 
     sdl::quit();
