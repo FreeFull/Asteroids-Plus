@@ -1,4 +1,4 @@
-use sdl::{video, render};
+use sdl2::{video, render};
 
 pub use self::gameloop::Loop;
 

@@ -1,4 +1,4 @@
-use sdl::rect::Point;
+use sdl2::rect::Point;
 use game::location::{Location, Displacement};
 use game::Renderer;
 

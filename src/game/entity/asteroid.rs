@@ -1,8 +1,8 @@
 use super::{Entity, EntityData, EntityType, AsteroidType};
 use game::location::{Location, Displacement};
 use game::Renderer;
-use sdl::rect::{Point, Rect};
-use sdl::pixels;
+use sdl2::rect::{Point, Rect};
+use sdl2::pixels;
 
 fn update(self_: &Entity, entities: &[Entity], to_delete: &mut Vec<uint>, to_add: &mut Vec<Entity>) -> Option<Entity> {
     let mut current = *self_;

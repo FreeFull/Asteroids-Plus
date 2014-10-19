@@ -1,8 +1,8 @@
 #![feature(macro_rules)]
 
 extern crate libc;
-extern crate sdl = "sdl2";
-use sdl::{video, event, keycode, timer, render};
+extern crate sdl2;
+use sdl2::{video, event, keycode, timer, render, sdl};
 
 use std::io::BufWriter;
 
@@ -12,7 +12,7 @@ mod game;
 static MS_PER_FRAME : uint = 15; // About 60fps
 
 fn main() {
-    sdl::init(sdl::InitAudio | sdl::InitVideo);
+    sdl::init(sdl::INIT_AUDIO | sdl::INIT_VIDEO);
 
     let window = video::Window::new("Asteroids Plus",
                                     video::PosCentered, video::PosCentered,
@@ -20,7 +20,7 @@ fn main() {
                                     video::WindowFlags::empty()).unwrap();
     let renderer = render::Renderer::from_window(window,
                                                  render::DriverAuto,
-                                                 render::Accelerated).unwrap();
+                                                 render::ACCELERATED).unwrap();
     let mut game_loop = Loop::new(renderer);
     let mut previous_time = timer::get_ticks();
     let mut sample_time = timer::get_ticks();

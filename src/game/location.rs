@@ -1,5 +1,5 @@
-#![allow(unused_code)]
-use sdl::rect::Point;
+#![allow(dead_code)]
+use sdl2::rect::Point;
 
 type Contents = i32;
 static MAX : Contents = ::std::i32::MAX;

@@ -1,5 +1,5 @@
-use sdl::{pixels, keycode};
-use sdl::rect::Point;
+use sdl2::{pixels, keycode};
+use sdl2::rect::Point;
 use std::default::Default;
 
 use game::entity::{Entity, Asteroid};
